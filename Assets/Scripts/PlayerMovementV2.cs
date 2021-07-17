@@ -9,13 +9,21 @@ public class PlayerMovementV2 : MonoBehaviour
     public float movementSpeed = 5;
     private Vector2 movement;
 
+    public LayerMask interactableCheckLayer;
+
     public float jumpSpeed;
     public GameObject groundCheckPoint;
     public float groundCheckRadius;
-    public LayerMask groundCheckLayer;
-
     public bool hasLanded = false;
     public bool isTouchingGround = false;
+
+    public GameObject leftWallCheck;
+    public GameObject rightWallCheck;
+    public float wallCheckRadius;
+    public float clingSpeed;
+    public bool isWallTouchingLeft = false;
+    public bool isWallTouchingRight = false;
+    public bool isClinging = false;
 
     public Animator animator;
 
@@ -29,17 +37,42 @@ public class PlayerMovementV2 : MonoBehaviour
     {
         animator.SetFloat("Speed", rb.velocity.magnitude);
 
-        isTouchingGround = Physics2D.OverlapCircle(groundCheckPoint.transform.position, groundCheckRadius, groundCheckLayer);
+        isTouchingGround = Physics2D.OverlapCircle(groundCheckPoint.transform.position, groundCheckRadius, interactableCheckLayer);
 
-        if (isTouchingGround && !hasLanded)
+        if (isTouchingGround)
         {
-            hasLanded = false;
+            isClinging = false;
+
+            if (!hasLanded)
+            {
+                hasLanded = false;
+            }
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                hasLanded = true;
+                OnJump();
+            }
         }
 
-        if (Input.GetButtonDown("Jump") && isTouchingGround)
+        isWallTouchingLeft = Physics2D.OverlapCircle(leftWallCheck.transform.position, groundCheckRadius, interactableCheckLayer);
+        isWallTouchingRight = Physics2D.OverlapCircle(rightWallCheck.transform.position, groundCheckRadius, interactableCheckLayer);
+
+        if (isWallTouchingLeft && !isTouchingGround && movement.x < 0)
         {
-            hasLanded = true;
-            OnJump();
+            Cling();
+        }
+        else if (isWallTouchingRight && !isTouchingGround && movement.x > 0)
+        {
+            Cling();
+        }
+        
+        if (isClinging)
+        {
+            if (Input.GetButtonDown("Jump"))
+            {
+                WallJump(isWallTouchingLeft);
+            }
         }
     }
 
@@ -49,9 +82,31 @@ public class PlayerMovementV2 : MonoBehaviour
         rb.velocity = new Vector2(movement.x * movementSpeed, rb.velocity.y);
     }
 
+    private void Cling()
+    {
+        rb.velocity = new Vector2(0, -clingSpeed);
+        isClinging = true;
+    }
+
     void OnJump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+    }
+
+    private void WallJump(bool isLeft)
+    {
+        if (isLeft)
+        {
+            rb.velocity = new Vector2(movementSpeed, jumpSpeed);
+            isClinging = false;
+            hasLanded = false;
+        }
+        else
+        {
+            rb.velocity = new Vector2(-movementSpeed, jumpSpeed);
+            isClinging = false;
+            hasLanded = false;
+        }
     }
 
 }
