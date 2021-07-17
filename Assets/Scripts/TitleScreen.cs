@@ -7,8 +7,6 @@ public class TitleScreen : MonoBehaviour
 {
 
     public string StartButtonScene = "SampleScene";
-    public string CreditButtonScene = "Credits";
-    public string BackButtonScene = "Title Screen";
 
     // Start is called before the first frame update
     void Start()
@@ -27,18 +25,8 @@ public class TitleScreen : MonoBehaviour
         SceneManager.LoadScene(StartButtonScene);
     }
 
-    public void CreditButton()
-    {
-        SceneManager.LoadScene(CreditButtonScene);
-    }
-
     public void QuitButton()
     {
         Application.Quit();
-    }
-
-    public void BackButton()
-    {
-        SceneManager.LoadScene(BackButtonScene);
     }
 }
