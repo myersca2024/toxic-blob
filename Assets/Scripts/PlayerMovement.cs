@@ -42,6 +42,8 @@ public class PlayerMovement : MonoBehaviour
     private bool hasLanded = false;
     private bool isTouchingGround = false;
 
+    public Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        animator.SetFloat("Speed", rb.velocity.magnitude); 
+
         isTouchingGround = Physics2D.OverlapCircle(groundCheckPoint.transform.position, groundCheckRadius, groundCheckLayer);
 
         if (isTouchingGround && !hasLanded)
@@ -82,25 +87,6 @@ public class PlayerMovement : MonoBehaviour
             inputVec = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             netForce += inputToMovement(inputVec);
 
-            if (recoilFrameCounter < recoilTime) {
-                netForce += recoilVel(playerToMouseDir);
-                recoilFrameCounter++;
-            }
-            else if (Input.GetButton("Fire1")) {
-                if (!fire1Held) {
-                    mousePosition = Input.mousePosition;
-                    mousePosition.x -= (Screen.width / 2);
-                    mousePosition.y -= (Screen.height / 2);
-                    playerToMouseDir = mousePosition - rb.position;
-                    playerToMouseDir.Normalize();
-                    netForce += recoilVel(playerToMouseDir);
-                    fire1Held = true;
-                    recoilFrameCounter = 0;
-                }
-            }
-            else {
-                fire1Held = false;
-            }
         }
 
         // apply net force to player
