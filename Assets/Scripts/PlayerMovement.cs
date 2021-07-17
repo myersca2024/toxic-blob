@@ -6,33 +6,41 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed;
-    public float accel;
+    public float speed = 0f;
+    public float accel = 0f;
 
-    public float inputDeadZone;
-    public float inputAngSnapZone;
-    public float maxSpeed;
-    public float maxForce;
-    public float startForce;
-    public float curvePow;
-    public float speedDecay;
-    public float stopSpeed;
+    public float inputDeadZone = 0.1f;
+    public float inputAngSnapZone = 5f;
+    public float maxSpeed = 1.2f;
+    public float maxForce = 10f;
+    public float startForce = 0.5f;
+    public float curvePow = 0.5f;
+    public float speedDecay = 5f;
+    public float stopSpeed = 0.1f;
 
-    public float recoilForce;
+    public float recoilForce = 30f;
 
     public Vector2 inputVec;
     public Vector2 netForce;
 
     public bool controlEnabled = true;
     public bool fire1Held = false;
-    public int recoilTime;
-    public int recoilFrameCounter;
+    public int recoilTime = 3;
+    public int recoilFrameCounter = 0;
 
     public Vector2[] inputAngSnap;
     public Vector2 playerToMouseDir;
     public Vector2 mousePosition;
 
     public Rigidbody2D rb;
+
+    public float jumpSpeed;
+    public GameObject groundCheckPoint;
+    public float groundCheckRadius;
+    public LayerMask groundCheckLayer;
+
+    private bool hasLanded = false;
+    private bool isTouchingGround = false;
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +52,23 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isTouchingGround = Physics2D.OverlapCircle(groundCheckPoint.transform.position, groundCheckRadius, groundCheckLayer);
 
+        if (isTouchingGround && !hasLanded)
+        {
+            hasLanded = false;
+        }
+
+        if (Input.GetButtonDown("Jump") && isTouchingGround)
+        {
+            hasLanded = true;
+            OnJump();
+        }
+    }
+
+    void OnJump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
     }
 
     // called at set intervals (physics stuff here)
@@ -80,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // apply net force to player
+        netForce.y = 0;
         rb.AddForce(netForce);
     }
 
@@ -122,6 +147,7 @@ public class PlayerMovement : MonoBehaviour
         return deltaForce;
     }
 
+    /*
         Vector2 inputToMovement2 (Vector2 input)
     {
         Vector2 output = new Vector2(0, 0);
@@ -162,6 +188,7 @@ public class PlayerMovement : MonoBehaviour
 
         return output;
     }
+    */
 
     Vector2 recoilVel(Vector2 direction)
     {
