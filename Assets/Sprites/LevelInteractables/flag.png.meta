@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sprites/LevelInteractables/flag.png.meta
 guid: 4917afa2e2cd5444c942a910a711512d
+=======
+guid: 4129d4f86967d3146aa86678bda43077
+>>>>>>> main:Assets/Sprites/LevelInteractables/metal block.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
