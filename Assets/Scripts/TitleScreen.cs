@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 public class TitleScreen : MonoBehaviour
 {
 
-    public string StartButtonScene = "SampleScene";
-
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +20,7 @@ public class TitleScreen : MonoBehaviour
 
     public void StartButton()
     {
-        SceneManager.LoadScene(StartButtonScene);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void QuitButton()
