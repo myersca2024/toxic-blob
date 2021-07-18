@@ -16,6 +16,7 @@ public class PlayerMovementV2 : MonoBehaviour
     public float groundCheckRadius;
     public bool hasLanded = false;
     public bool isTouchingGround = false;
+    public AudioSource jumpSFX;
 
     public GameObject leftWallCheck;
     public GameObject rightWallCheck;
@@ -90,11 +91,13 @@ public class PlayerMovementV2 : MonoBehaviour
 
     void OnJump()
     {
+        jumpSFX.Play();
         rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
     }
 
     private void WallJump(bool isLeft)
     {
+        jumpSFX.Play();
         if (isLeft)
         {
             rb.velocity = new Vector2(movementSpeed, jumpSpeed);
